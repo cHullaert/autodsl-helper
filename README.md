@@ -2,7 +2,7 @@
 
 ## code examples
 ```kotlin
-@AutoDsl
+@AutoDsl(builderAnnotations = ["com.darwinit.annotation.demo.Dummy"])
 open class Person (val name: String, 
                    val age: Int, 
                    val uuid: UUID, 
@@ -10,6 +10,7 @@ open class Person (val name: String,
 
 // will gives
 @Builder
+@Dummy
 class PersonAutoBuilder {
     var name: String = ""
     var age: Int = 0

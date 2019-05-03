@@ -2,20 +2,22 @@ package com.darwinit.annotation.autodsl
 
 import com.darwinit.annotation.autodsl.generator.BuilderGenerator
 import com.google.auto.service.AutoService
-import com.squareup.kotlinpoet.*
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.Processor
 import javax.annotation.processing.RoundEnvironment
 import javax.annotation.processing.SupportedOptions
 import javax.lang.model.SourceVersion
-import javax.lang.model.element.Element
 import javax.lang.model.element.ElementKind
 import javax.lang.model.element.TypeElement
 import javax.tools.Diagnostic
 import javax.lang.model.util.ElementFilter
+import javax.lang.model.element.VariableElement
+
+import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import javax.lang.model.element.Element
 import kotlin.reflect.jvm.internal.impl.builtins.jvm.JavaToKotlinClassMap
 import kotlin.reflect.jvm.internal.impl.name.FqName
-import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 
 @AutoService(Processor::class)
 @SupportedOptions(AutoDslProcessor.KAPT_KOTLIN_GENERATED_OPTION_NAME)
@@ -29,6 +31,18 @@ class AutoDslProcessor: AbstractProcessor() {
         return SourceVersion.latest()
     }
 
+    private fun getFields(typeElement: TypeElement): List<VariableElement> {
+        val fields = ElementFilter.fieldsIn(typeElement.enclosedElements)
+        if(typeElement.superclass != null) {
+            val superElement=processingEnv.typeUtils.asElement(typeElement.superclass)
+            if(superElement != null) {
+                return fields+getFields(superElement as TypeElement)
+            }
+        }
+
+        return fields
+    }
+
     override fun process(annotations: MutableSet<out TypeElement>?, roundEnv: RoundEnvironment?): Boolean {
         println("test")
         this.processingEnv.messager.printMessage(Diagnostic.Kind.NOTE, "start process")
@@ -38,7 +52,8 @@ class AutoDslProcessor: AbstractProcessor() {
             .map { it as TypeElement }
             .filter { it.kind === ElementKind.CLASS}
             .forEach {
-                val fields = ElementFilter.fieldsIn(it.enclosedElements)
+
+                val fields=getFields(it)
                 BuilderGenerator(it, fields)
                     .build()
                     .writeTo(processingEnv.filer)
@@ -52,6 +67,7 @@ class AutoDslProcessor: AbstractProcessor() {
     }
 }
 
+
 fun Element.javaToKotlinType(): TypeName =
     asType().asTypeName().javaToKotlinType()
 
@@ -59,7 +75,7 @@ fun Element.javaToKotlinType(): TypeName =
 fun TypeName.javaToKotlinType(): TypeName {
     return if (this is ParameterizedTypeName) {
         val className = rawType.javaToKotlinType() as ClassName
-         className.parameterizedBy(*typeArguments.map { it.javaToKotlinType() }.toTypedArray())
+        className.parameterizedBy(*typeArguments.map { it.javaToKotlinType() }.toTypedArray())
     } else {
         val className =
             JavaToKotlinClassMap.INSTANCE.mapJavaToKotlin(FqName(toString()))

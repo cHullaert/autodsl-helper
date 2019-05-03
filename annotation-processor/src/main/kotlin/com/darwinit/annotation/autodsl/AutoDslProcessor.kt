@@ -52,7 +52,6 @@ class AutoDslProcessor: AbstractProcessor() {
             .map { it as TypeElement }
             .filter { it.kind === ElementKind.CLASS}
             .forEach {
-
                 val fields=getFields(it)
                 BuilderGenerator(it, fields)
                     .build()

@@ -1,9 +1,6 @@
 package com.darwinit.annotation.autodsl.generator
 
-import com.darwinit.annotation.autodsl.Builder
-import com.darwinit.annotation.autodsl.getClassname
-import com.darwinit.annotation.autodsl.getDefaultValue
-import com.darwinit.annotation.autodsl.javaToKotlinType
+import com.darwinit.annotation.autodsl.*
 import com.squareup.kotlinpoet.*
 import javax.lang.model.element.TypeElement
 import javax.lang.model.element.VariableElement
@@ -15,9 +12,15 @@ class BuilderGenerator(private val clazz: TypeElement, private val fields: Itera
     }
 
     private fun createBuilderType(): TypeSpec {
-        return TypeSpec.classBuilder(BUILDER_CLASS_PATTERN.format(clazz.simpleName.toString()))
+        val builder=TypeSpec.classBuilder(BUILDER_CLASS_PATTERN.format(clazz.simpleName.toString()))
             .addAnnotation(Builder::class)
-            .addProperties(createProperties())
+
+        clazz.getAnnotation(AutoDsl::class.java).builderAnnotations
+            .forEach {
+                builder.addAnnotation(ClassName(it.substring(0, it.lastIndexOf(".")), it.substring(it.lastIndexOf(".")+1, it.length)))
+            }
+
+        return builder.addProperties(createProperties())
             .addFunction(createBuildFunction())
             .build()
     }

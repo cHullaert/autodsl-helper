@@ -1,10 +1,8 @@
 package com.darwinit.annotation.autodsl
 
+import com.darwinit.annotation.autodsl.generator.BuilderGenerator
 import com.google.auto.service.AutoService
 import com.squareup.kotlinpoet.*
-import java.lang.reflect.Modifier.isStatic
-import java.lang.reflect.ParameterizedType
-import java.lang.reflect.Type
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.Processor
 import javax.annotation.processing.RoundEnvironment

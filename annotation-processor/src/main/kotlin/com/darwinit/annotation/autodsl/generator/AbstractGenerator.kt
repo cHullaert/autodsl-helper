@@ -1,7 +1,8 @@
-package com.darwinit.annotation.autodsl
+package com.darwinit.annotation.autodsl.generator
 
+import com.darwinit.annotation.autodsl.AutoDslOption
+import com.darwinit.annotation.autodsl.AutoDslOptionLoader
 import com.squareup.kotlinpoet.FileSpec
-import javax.lang.model.element.Element
 
 abstract class AbstractGenerator {
 

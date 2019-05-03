@@ -1,5 +1,9 @@
-package com.darwinit.annotation.autodsl
+package com.darwinit.annotation.autodsl.generator
 
+import com.darwinit.annotation.autodsl.Builder
+import com.darwinit.annotation.autodsl.getClassname
+import com.darwinit.annotation.autodsl.getDefaultValue
+import com.darwinit.annotation.autodsl.javaToKotlinType
 import com.squareup.kotlinpoet.*
 import javax.lang.model.element.TypeElement
 import javax.lang.model.element.VariableElement

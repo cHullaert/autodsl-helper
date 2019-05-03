@@ -1,9 +1,6 @@
 package com.darwinit.annotation.autodsl
 
-import com.squareup.kotlinpoet.FileSpec
-import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.*
 import javax.lang.model.element.TypeElement
 import javax.lang.model.element.VariableElement
 
@@ -23,7 +20,7 @@ class BuilderGenerator(private val clazz: TypeElement, private val fields: Itera
 
     private fun createBuildFunction(): FunSpec {
         val paramList = fields.map {
-            "%s=this.%s".format(it.simpleName.toString(), it.simpleName.toString())
+            "%s=%s".format(it.simpleName.toString(), it.simpleName.toString())
         }.joinToString(",")
 
         return FunSpec.builder("build")
@@ -35,8 +32,9 @@ class BuilderGenerator(private val clazz: TypeElement, private val fields: Itera
     private fun createProperties(): Iterable<PropertySpec> {
 
         return fields.map {
-            PropertySpec.builder(it.simpleName.toString(), it.javaToKotlinType().copy(nullable = false))
+            PropertySpec.builder(it.simpleName.toString(), it.javaToKotlinType().copy(nullable = it.javaToKotlinType().isNullable))
                 .mutable()
+                .initializer(it.javaToKotlinType().getDefaultValue().toString())
                 .build()
         }.asIterable()
     }

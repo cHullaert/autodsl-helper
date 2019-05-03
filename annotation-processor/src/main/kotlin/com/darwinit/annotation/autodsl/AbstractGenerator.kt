@@ -3,9 +3,13 @@ package com.darwinit.annotation.autodsl
 import com.squareup.kotlinpoet.FileSpec
 import javax.lang.model.element.Element
 
-interface Generator {
+abstract class AbstractGenerator {
 
-    fun build(): FileSpec
+    protected val options: AutoDslOption by lazy {
+        AutoDslOptionLoader().load()
+    }
+
+    abstract fun build(): FileSpec
 
     companion object {
         const val BUILDER_CLASS_PATTERN = "%sAutoBuilder"

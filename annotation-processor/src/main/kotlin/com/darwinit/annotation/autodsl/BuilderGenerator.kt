@@ -6,6 +6,10 @@ import javax.lang.model.element.VariableElement
 
 class BuilderGenerator(private val clazz: TypeElement, private val fields: Iterable<VariableElement>): Generator {
 
+    private val option: AutoDslOption by lazy {
+        AutoDslOptionLoader().load()
+    }
+
     private fun getPackageName(): String {
         return clazz.qualifiedName.toString().substring(0, clazz.qualifiedName.toString().lastIndexOf("."))
     }
@@ -40,10 +44,11 @@ class BuilderGenerator(private val clazz: TypeElement, private val fields: Itera
     }
 
     override fun build(): FileSpec {
-        return FileSpec.builder(getPackageName(), Generator.BUILDER_CLASS_PATTERN.format(clazz.simpleName.toString()))
+        TODO(option.toString())
+        /*return FileSpec.builder(getPackageName(), Generator.BUILDER_CLASS_PATTERN.format(clazz.simpleName.toString()))
             .addType(createBuilderType())
             .addFunction(FunctionGenerator(clazz, fields).buildFunction())
-            .build()
+            .build()*/
 
     }
 

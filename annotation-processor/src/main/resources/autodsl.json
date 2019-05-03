@@ -1,0 +1,8 @@
+{
+  "transformers": [
+    {
+      "classname": "UUID",
+      "value": "test"
+    }
+  ]
+}

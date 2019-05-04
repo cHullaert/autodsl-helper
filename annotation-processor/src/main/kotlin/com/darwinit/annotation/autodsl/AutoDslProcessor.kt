@@ -44,7 +44,6 @@ class AutoDslProcessor: AbstractProcessor() {
     }
 
     override fun process(annotations: MutableSet<out TypeElement>?, roundEnv: RoundEnvironment?): Boolean {
-        println("test")
         this.processingEnv.messager.printMessage(Diagnostic.Kind.NOTE, "start process")
 
         roundEnv!!.getElementsAnnotatedWith(AutoDsl::class.java)

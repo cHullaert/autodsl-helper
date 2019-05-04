@@ -22,8 +22,18 @@ class BuilderGenerator(
             }
 
         return builder.addProperties(createProperties())
+            .addFunctions(createSubObjectFunctions())
             .addFunction(createBuildFunction())
             .build()
+    }
+
+    private fun createSubObjectFunctions(): Iterable<FunSpec> {
+        return this.fields.filter { isAutoDslObject(it) }
+            .map {
+                val autoDsl=getAutoDslObject(it)
+                val generator=FunctionGenerator(autoDsl as TypeElement, fields, this.clazzList)
+                generator.buildFunction()
+            }
     }
 
     private fun createBuildFunction(): FunSpec {
@@ -66,6 +76,10 @@ class BuilderGenerator(
                     .addModifiers(modifier)
                     .build()
         }.asIterable()
+    }
+
+    private fun getAutoDslObject(field: VariableElement): Element? {
+        return this.clazzList.find { field.javaToKotlinType() == it.javaToKotlinType() }
     }
 
     private fun isAutoDslObject(field: VariableElement): Boolean {

@@ -17,6 +17,19 @@
           "name": "UUID"
         }
       ]
+    },
+    {
+      "class": {
+        "package": "kotlin.collections",
+        "name": "List<String>"
+      },
+      "substitutionClass": {
+        "package": "kotlin",
+        "name": "String"
+      },
+      "default": "\"\"",
+      "value": "%property%.split(\",\").map{ it.trim() }.filter { !it.isEmpty()}",
+      "imports": []
     }
   ]
 }

@@ -17,7 +17,9 @@ class FunctionGenerator(clazz: TypeElement, fields: Iterable<VariableElement>): 
         val lambda= LambdaTypeName.get(receiver = TypeVariableName(BUILDER_CLASS_PATTERN.format(clazz.simpleName.toString())),
             returnType = Unit::class.asClassName())
 
-        return FunSpec.builder(clazz.simpleName.toString().decapitalize())
+        val functionName = if(this.autoDsl.functionName.isNotBlank()) this.autoDsl.functionName else clazz.simpleName.toString().decapitalize()
+
+        return FunSpec.builder(functionName)
             .addParameter("block", lambda)
             .returns(clazz.javaToKotlinType())
             .addStatement("return %s().apply(block).build()".format(BUILDER_CLASS_PATTERN.format(clazz.simpleName.toString())))

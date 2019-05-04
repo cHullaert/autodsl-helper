@@ -9,7 +9,7 @@ open class Person (val name: String,
                    val uuid: UUID,
                    val tags: List<String>,
                    val friends: List<Person>)
-@AutoDsl
+@AutoDsl(functionName = "overrideSuperPerson")
 open class SuperPerson (name: String,
                         age: Int,
                         uuid: UUID,

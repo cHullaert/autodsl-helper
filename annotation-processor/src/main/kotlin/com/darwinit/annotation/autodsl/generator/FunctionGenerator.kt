@@ -20,7 +20,7 @@ class FunctionGenerator(private val clazz: TypeElement, private val fields: Iter
         val lambda= LambdaTypeName.get(receiver = TypeVariableName(BUILDER_CLASS_PATTERN.format(clazz.simpleName.toString())),
             returnType = Unit::class.asClassName())
 
-        return FunSpec.builder(clazz.simpleName.toString().capitalize())
+        return FunSpec.builder(clazz.simpleName.toString().decapitalize())
             .addParameter("block", lambda)
             .returns(clazz.javaToKotlinType())
             .addStatement("return %s().apply(block).build()".format(BUILDER_CLASS_PATTERN.format(clazz.simpleName.toString())))

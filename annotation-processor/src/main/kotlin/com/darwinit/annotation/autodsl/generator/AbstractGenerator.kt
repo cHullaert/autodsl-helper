@@ -4,10 +4,13 @@ import com.darwinit.annotation.autodsl.AutoDsl
 import com.darwinit.annotation.autodsl.AutoDslOption
 import com.darwinit.annotation.autodsl.AutoDslOptionLoader
 import com.squareup.kotlinpoet.FileSpec
+import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
 import javax.lang.model.element.VariableElement
 
-abstract class AbstractGenerator(protected val clazz: TypeElement, protected val fields: Iterable<VariableElement>) {
+abstract class AbstractGenerator(protected val clazz: TypeElement,
+                                 protected val fields: Iterable<VariableElement>,
+                                 protected val clazzList: Iterable<Element>) {
 
     protected fun getPackageName(): String {
         return clazz.qualifiedName.toString().substring(0, clazz.qualifiedName.toString().lastIndexOf("."))

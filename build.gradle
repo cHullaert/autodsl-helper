@@ -24,3 +24,7 @@ compileKotlin {
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
+
+
+compileJava.enabled=false
+kapt.includeCompileClasspath = false

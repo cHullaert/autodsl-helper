@@ -44,20 +44,24 @@ class AutoDslProcessor: AbstractProcessor() {
     }
 
     override fun process(annotations: MutableSet<out TypeElement>?, roundEnv: RoundEnvironment?): Boolean {
-        this.processingEnv.messager.printMessage(Diagnostic.Kind.NOTE, "start process")
+        this.processingEnv.messager.printMessage(Diagnostic.Kind.NOTE, "evaluate auto dsl processor")
 
-        roundEnv!!.getElementsAnnotatedWith(AutoDsl::class.java)
+        val clazzList=roundEnv!!.getElementsAnnotatedWith(AutoDsl::class.java)
+
+        clazzList
             .asSequence()
             .map { it as TypeElement }
             .filter { it.kind === ElementKind.CLASS}
             .forEach {
+                this.processingEnv.messager.printMessage(Diagnostic.Kind.NOTE, "class %s is annotated with autoDsl".format(it.simpleName.toString()))
+
                 val fields=getFields(it)
-                BuilderGenerator(it, fields)
+                BuilderGenerator(it, fields, clazzList)
                     .build()
                     .writeTo(processingEnv.filer)
             }
 
-        return false
+        return true
     }
 
     companion object {

@@ -16,11 +16,3 @@ open class Address(var street: String? = null,
                    var number: Int? = null,
                    var city: String? = null)
 
-@AutoDsl(functionName = "overrideSuperPerson")
-open class SuperPerson (name: String,
-                        age: Int,
-                        uuid: UUID,
-                        friends: List<Person>,
-                        tags: List<String>,
-                        address: Address,
-                        val attribute: String): Person(name, age, uuid, tags, address, friends)

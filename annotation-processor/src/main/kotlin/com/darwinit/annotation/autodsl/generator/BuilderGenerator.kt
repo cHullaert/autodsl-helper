@@ -2,11 +2,15 @@ package com.darwinit.annotation.autodsl.generator
 
 import com.darwinit.annotation.autodsl.*
 import com.squareup.kotlinpoet.*
+import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
 import javax.lang.model.element.VariableElement
-import javax.lang.model.type.TypeKind
 
-class BuilderGenerator(clazz: TypeElement, fields: Iterable<VariableElement>): AbstractGenerator(clazz, fields) {
+class BuilderGenerator(
+    clazz: TypeElement,
+    fields: Iterable<VariableElement>,
+    clazzList: Iterable<Element>
+): AbstractGenerator(clazz, fields, clazzList) {
 
     private fun createBuilderType(): TypeSpec {
         val builder=TypeSpec.classBuilder(BUILDER_CLASS_PATTERN.format(clazz.simpleName.toString()))
@@ -65,7 +69,8 @@ class BuilderGenerator(clazz: TypeElement, fields: Iterable<VariableElement>): A
     }
 
     private fun isAutoDslObject(field: VariableElement): Boolean {
-        return false
+        val value=this.clazzList.find { field.javaToKotlinType() == it.javaToKotlinType() }
+        return value!=null
     }
 
     override fun build(): FileSpec {
@@ -82,7 +87,7 @@ class BuilderGenerator(clazz: TypeElement, fields: Iterable<VariableElement>): A
         }
 
         return builder.addType(createBuilderType())
-            .addFunction(FunctionGenerator(clazz, fields).buildFunction())
+            .addFunction(FunctionGenerator(clazz, fields, clazzList).buildFunction())
             .build()
 
     }

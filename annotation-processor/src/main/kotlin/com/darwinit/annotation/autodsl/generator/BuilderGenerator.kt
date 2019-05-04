@@ -5,17 +5,13 @@ import com.squareup.kotlinpoet.*
 import javax.lang.model.element.TypeElement
 import javax.lang.model.element.VariableElement
 
-class BuilderGenerator(private val clazz: TypeElement, private val fields: Iterable<VariableElement>): AbstractGenerator() {
-
-    private fun getPackageName(): String {
-        return clazz.qualifiedName.toString().substring(0, clazz.qualifiedName.toString().lastIndexOf("."))
-    }
+class BuilderGenerator(clazz: TypeElement, fields: Iterable<VariableElement>): AbstractGenerator(clazz, fields) {
 
     private fun createBuilderType(): TypeSpec {
         val builder=TypeSpec.classBuilder(BUILDER_CLASS_PATTERN.format(clazz.simpleName.toString()))
             .addAnnotation(Builder::class)
 
-        clazz.getAnnotation(AutoDsl::class.java).builderAnnotations
+        autoDsl.builderAnnotations
             .forEach {
                 builder.addAnnotation(ClassName(it.substring(0, it.lastIndexOf(".")), it.substring(it.lastIndexOf(".")+1, it.length)))
             }

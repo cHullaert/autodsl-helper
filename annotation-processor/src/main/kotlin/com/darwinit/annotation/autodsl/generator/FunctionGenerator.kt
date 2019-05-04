@@ -5,10 +5,7 @@ import com.squareup.kotlinpoet.*
 import javax.lang.model.element.TypeElement
 import javax.lang.model.element.VariableElement
 
-class FunctionGenerator(private val clazz: TypeElement, private val fields: Iterable<VariableElement>): AbstractGenerator() {
-    private fun getPackageName(): String {
-        return clazz.qualifiedName.toString().substring(0, clazz.qualifiedName.toString().lastIndexOf("."))
-    }
+class FunctionGenerator(clazz: TypeElement, fields: Iterable<VariableElement>): AbstractGenerator(clazz, fields) {
 
     override fun build(): FileSpec {
         return FileSpec.builder(getPackageName(), FUNCTION_CLASS_PATTERN.format(clazz.simpleName.toString()))

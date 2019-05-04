@@ -8,11 +8,19 @@ open class Person (val name: String,
                    val age: Int,
                    val uuid: UUID,
                    val tags: List<String>,
+                   val address: Address,
                    val friends: List<Person>)
+
+@AutoDsl
+open class Address(var street: String? = null,
+                   var number: Int? = null,
+                   var city: String? = null)
+
 @AutoDsl(functionName = "overrideSuperPerson")
 open class SuperPerson (name: String,
                         age: Int,
                         uuid: UUID,
                         friends: List<Person>,
                         tags: List<String>,
-                        val attribute: String): Person(name, age, uuid, tags, friends)
+                        address: Address,
+                        val attribute: String): Person(name, age, uuid, tags, address, friends)

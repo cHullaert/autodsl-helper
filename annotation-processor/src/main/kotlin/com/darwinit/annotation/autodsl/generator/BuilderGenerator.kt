@@ -4,6 +4,7 @@ import com.darwinit.annotation.autodsl.*
 import com.squareup.kotlinpoet.*
 import javax.lang.model.element.TypeElement
 import javax.lang.model.element.VariableElement
+import javax.lang.model.type.TypeKind
 
 class BuilderGenerator(clazz: TypeElement, fields: Iterable<VariableElement>): AbstractGenerator(clazz, fields) {
 
@@ -45,18 +46,26 @@ class BuilderGenerator(clazz: TypeElement, fields: Iterable<VariableElement>): A
                 transformer ->  typeName==transformer.sourceClass.getClassname()
             }
 
+            val modifier=if(!isAutoDslObject(it)) KModifier.PUBLIC else KModifier.PRIVATE
+
             if(transformer !=null) {
                 PropertySpec.builder(it.simpleName.toString(), transformer.substitutionClass.getClassname())
                     .mutable()
                     .initializer(transformer.defaultValue)
+                    .addModifiers(modifier)
                     .build()
             }
             else
             PropertySpec.builder(it.simpleName.toString(), typeName)
                     .mutable()
                     .initializer(it.javaToKotlinType().getDefaultValue().toString())
+                    .addModifiers(modifier)
                     .build()
         }.asIterable()
+    }
+
+    private fun isAutoDslObject(field: VariableElement): Boolean {
+        return false
     }
 
     override fun build(): FileSpec {

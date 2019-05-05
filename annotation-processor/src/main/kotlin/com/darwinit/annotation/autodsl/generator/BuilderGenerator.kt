@@ -31,8 +31,8 @@ class BuilderGenerator(
         return this.fields.filter { isAutoDslObject(it) }
             .map {
                 val autoDsl=getAutoDslObject(it)
-                val generator=FunctionGenerator(autoDsl as TypeElement, fields, this.clazzList)
-                generator.buildFunction()
+                val generator=SubFunctionGenerator(autoDsl as TypeElement, fields, this.clazzList)
+                generator.buildFunction(it.simpleName.toString())
             }
     }
 

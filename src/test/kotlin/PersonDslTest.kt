@@ -1,5 +1,7 @@
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isInstanceOf
+import com.darwinit.annotation.demo.Person
 import org.junit.jupiter.api.Test
 
 class PersonDslTest {
@@ -14,5 +16,8 @@ class PersonDslTest {
         val container = mutableListOf<Any>()
         runner.run(listOf(ScriptRunner.Variable("container", "MutableList<Any>", container)))
         assertThat(container.size).isEqualTo(1)
+        assertThat(container[0]).isInstanceOf(Person::class.java)
+        assertThat((container[0] as Person).name).isEqualTo("John")
+        assertThat((container[0] as Person).address.city).isEqualTo("London")
     }
 }

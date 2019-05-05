@@ -17,7 +17,7 @@ class ScriptHookModifier(private val scriptHooks: List<ScriptHook>) {
             hook -> mutedFile=MutableVisitor.preVisit(mutedFile) { v, _ ->
                     if(v is Node.Expr.Call) {
                         if(v.expr is Node.Expr.Name) {
-                            if ((hook.patterns.indexOf((v.expr as Node.Expr.Name).name)>-1) && (list.indexOf(v)==-1)) {
+                            if ((hook.patterns.indexOf((v.expr as Node.Expr.Name).name)>-1) && (list.filter { v === it }.isEmpty())) {
                                 val container=Node.Expr.Name(hook.obj)
                                 val dot=Node.Expr.BinaryOp.Oper.Token(Node.Expr.BinaryOp.Token.DOT)
                                 val addExpr=Node.Expr.Name(hook.method)

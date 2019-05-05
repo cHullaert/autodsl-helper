@@ -2,10 +2,13 @@ import javax.script.ScriptEngine
 import javax.script.ScriptEngineManager
 import javax.script.SimpleBindings
 
-class ScriptRunner(private val scriptFile: String?=null,
+class ScriptRunner(private val script: Script? = null,
                    private val scriptHooks: List<ScriptHook>,
                    private val options: Set<Option>) {
 
+    class Dependency(val name: String)
+    class Script(val file: String?=null,
+                 val dependencies: List<Dependency>)
     class Variable(val name: String,
                    val type: String,
                    val value: Any)
@@ -18,9 +21,9 @@ class ScriptRunner(private val scriptFile: String?=null,
         (ScriptEngineManager().getEngineByExtension("kts"))
     }
 
-    private val script: String by lazy {
-        if(scriptFile!=null)
-            prepare(ScriptRunner::class.java.getResource(this.scriptFile).readText())
+    private val scriptText: String by lazy {
+        if(script!=null)
+            prepare(ScriptRunner::class.java.getResource(this.script.file).readText())
         else ""
     }
 
@@ -32,7 +35,7 @@ class ScriptRunner(private val scriptFile: String?=null,
 
         val bindingCode = variables.map { "val %s = bindings[\"%s\"] as %s".format(it.name, it.name, it.type)  }
                                    .joinToString("\n")
-        val code = script.replace("###BINDINGS###", "%s\n".format(bindingCode))
+        val code = scriptText.replace("###BINDINGS###", "%s\n".format(bindingCode))
         this.engine.eval(code, bindings)
     }
 
@@ -43,8 +46,8 @@ class ScriptRunner(private val scriptFile: String?=null,
             .joinToString("\n")
     }
 
-    private fun prepare(script: String): String {
-        var current = script
+    private fun prepare(scriptText: String): String {
+        var current = scriptText
 
         current = clean(current)
         if(options.contains(Option.GENERATE_MAIN)) {
@@ -60,7 +63,9 @@ class ScriptRunner(private val scriptFile: String?=null,
                                 .joinToString("\n")
         }
 
-        return "import com.darwinit.annotation.demo.*\n\n###BINDINGS###%s".format(current)
+        return script!!.dependencies.map {
+            "import %s".format(it.name)
+        }.joinToString("\n")+"\n\n###BINDINGS###%s".format(current)
     }
 
 }

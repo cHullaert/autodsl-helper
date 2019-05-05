@@ -74,7 +74,9 @@ fun superperson(block: SuperPersonAutoBuilder.() -> Unit): SuperPerson =
 
 # readings
 
+* https://github.com/cretz/kastree/
 * https://github.com/square/kotlinpoet/issues/236
 * https://github.com/FasterXML/jackson-module-kotlin
 * https://stackoverflow.com/questions/8587096/how-do-you-debug-java-annotation-processors-using-intellij
 * https://medium.com/@joachim.beckers/debugging-an-annotation-processor-using-intellij-idea-in-2018-cde72758b78a
+* https://kotlinexpertise.com/run-kotlin-scripts-from-kotlin-programs/

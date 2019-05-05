@@ -1,0 +1,11 @@
+import com.darwinit.annotation.demo.*
+
+person {
+    name = "John"
+    age = 15
+    address {
+        street = "Main Street"
+        number = 12
+        city = "London"
+    }
+}

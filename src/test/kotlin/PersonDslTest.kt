@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 class PersonDslTest {
 
     @Test
-    fun testSimplePerson() {
+    fun personCreatedAndGetBackInBindings() {
         val scriptHooks= mutableListOf(ScriptHook("container", "add", patterns = arrayOf("person")))
         val runner=ScriptRunner(ScriptRunner.Script("/scripts/SimplePerson.ylib",
                                                     listOf(ScriptRunner.Dependency("com.darwinit.annotation.demo.*"))),

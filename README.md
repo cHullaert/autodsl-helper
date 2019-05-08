@@ -1,11 +1,13 @@
-# usage
+# Introduction
 
 The goal of this project is to offer a convenient way to produce dsl via kotlin classes.  The project is not a fork but
 it's largely inspired by https://github.com/juanchosaravia/autodsl this one. Thanks to him.
 
 The following link is a documentation used by the creation of this project.  https://proandroiddev.com/writing-dsls-in-kotlin-part-1-7f5d2193f277
 
-This project provide also a convenient way to execute the script produced with the dsl syntax.
+This project provide also a convenient way to execute the script produced with the dsl syntax.  
+
+Please feel free to use it as you want.
 
 ## code examples
 ```kotlin

@@ -12,10 +12,11 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.ClassName
 
 
-class CollectionGenerator(val fields: List<VariableElement>) {
+class CollectionGenerator(private val packageName: String, private val fields: List<VariableElement>) {
 
     fun build(): FileSpec {
-        val builder=FileSpec.builder("com.darwinit.annotation.demo", "CollectionWrapper")
+        val builder=FileSpec.builder(packageName,
+                                    "CollectionWrapper")
 
         fields.distinctBy {
             it.simpleName.toString()

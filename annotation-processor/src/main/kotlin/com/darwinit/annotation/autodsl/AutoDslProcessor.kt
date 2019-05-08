@@ -56,15 +56,23 @@ class AutoDslProcessor: AbstractProcessor() {
     }
 
     private fun processCollections(clazzList: Set<Element>) {
-        val allFields = clazzList
-            .map { it as TypeElement }
-            .filter { it.kind === ElementKind.CLASS}
-            .flatMap { getFields(it) }
+        val clazzGroup = clazzList
+            .groupBy {
+                clazz -> (clazz as TypeElement).asClassName().packageName
+            }
 
-        if(allFields.isNotEmpty())
-            CollectionGenerator(allFields)
-                .build()
-                .writeTo(processingEnv.filer)
+        clazzGroup.forEach {
+            clazz ->
+
+            val allFields=clazz.value.map { it as TypeElement }
+                .filter { it.kind === javax.lang.model.element.ElementKind.CLASS}
+                .flatMap { getFields(it) }
+
+            if(allFields.isNotEmpty())
+                CollectionGenerator(clazz.key, allFields)
+                    .build()
+                    .writeTo(processingEnv.filer)
+        }
     }
 
     private fun processClasses(clazzList: Set<Element>) {

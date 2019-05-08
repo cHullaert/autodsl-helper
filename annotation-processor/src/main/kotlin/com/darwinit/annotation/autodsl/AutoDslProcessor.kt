@@ -61,9 +61,10 @@ class AutoDslProcessor: AbstractProcessor() {
             .filter { it.kind === ElementKind.CLASS}
             .flatMap { getFields(it) }
 
-        CollectionGenerator(allFields)
-            .build()
-            .writeTo(processingEnv.filer)
+        if(allFields.isNotEmpty())
+            CollectionGenerator(allFields)
+                .build()
+                .writeTo(processingEnv.filer)
     }
 
     private fun processClasses(clazzList: Set<Element>) {

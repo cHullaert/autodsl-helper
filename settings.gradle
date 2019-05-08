@@ -1,4 +1,4 @@
-rootProject.name = 'demokt-processor'
+rootProject.name = 'autodsl-helper'
 include 'annotation-processor'
 include 'script-processor'
 include 'annotation-autodsl'

@@ -66,27 +66,28 @@ fun superperson(block: SuperPersonAutoBuilder.() -> Unit): SuperPerson =
 ```
 
 ## configuration
+ 
 ```json
 {
   "transformers": [
     {
-      # if a property of the source class is a java.util.UUID
+      "comment_1": "if a property of the source class is a java.util.UUID",
       "class": {
         "package": "java.util",
         "name": "UUID"
       },
-      # please use the following class
+      "comment_2": "please use the following class",
       "substitutionClass": {
         "package": "kotlin",
         "name": "String"
       },
-      // with this default value
+      "comment_3": "with this default value",
       "default": "\"00000000-0000-0000-0000-000000000000\"",
-      // and transform it like this
+      "comment_4": "and transform it like this",
       "value": "UUID.fromString(%property%)",
       "imports": [
         {
-          // don't forget to import the class type in the parametrization since it's used on the line value
+          "comment_5": "don't forget to import the class type in the parametrization since it's used on the line value",          
           "package": "java.util",
           "name": "UUID"
         }
@@ -95,6 +96,9 @@ fun superperson(block: SuperPersonAutoBuilder.() -> Unit): SuperPerson =
   ]
 }
 ```
+
+:exclamation: the "comment_*" properties are not really part of the configuration, there are just there to add comments 
+in json file
 
 # readings
 

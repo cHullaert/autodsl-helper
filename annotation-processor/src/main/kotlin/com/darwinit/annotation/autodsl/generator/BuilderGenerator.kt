@@ -5,6 +5,8 @@ import com.squareup.kotlinpoet.*
 import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
 import javax.lang.model.element.VariableElement
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.ClassName
 
 class BuilderGenerator(
     clazz: TypeElement,
@@ -22,16 +24,25 @@ class BuilderGenerator(
             }
 
         return builder.addProperties(createProperties())
-            .addFunctions(createSubObjectFunctions())
+            .addFunctions(createAutoDslFunctions())
+            .addFunctions(createAutoDslCollectionFunctions())
             .addFunction(createBuildFunction())
             .build()
     }
 
-    private fun createSubObjectFunctions(): Iterable<FunSpec> {
+    private fun createAutoDslFunctions(): Iterable<FunSpec> {
         return this.fields.filter { isAutoDslObject(it) }
             .map {
                 val autoDsl=getAutoDslObject(it)
-                val generator=SubFunctionGenerator(autoDsl as TypeElement, fields, this.clazzList)
+                val generator=AutoDslFunctionGenerator(autoDsl as TypeElement, fields, this.clazzList)
+                generator.buildFunction(it.simpleName.toString())
+            }
+    }
+
+    private fun createAutoDslCollectionFunctions(): Iterable<FunSpec> {
+        return this.fields.filter { isAutoDslObjectCollection(it) }
+            .map {
+                val generator=AutoDslCollectionFunctionGenerator()
                 generator.buildFunction(it.simpleName.toString())
             }
     }
@@ -60,12 +71,20 @@ class BuilderGenerator(
                 transformer ->  typeName==transformer.sourceClass.getClassname()
             }
 
-            val modifier=if(!isAutoDslObject(it)) KModifier.PUBLIC else KModifier.PRIVATE
+            val modifier=if(!(isAutoDslObject(it) || (isAutoDslObjectCollection(it)))) KModifier.PUBLIC else KModifier.PRIVATE
 
             if(transformer !=null) {
                 PropertySpec.builder(it.simpleName.toString(), transformer.substitutionClass.getClassname())
                     .mutable()
                     .initializer(transformer.defaultValue)
+                    .addModifiers(modifier)
+                    .build()
+            } else if (isAutoDslObjectCollection(it)) {
+                val parameterizedTypeName=typeName as ParameterizedTypeName
+                val newParameterizedTypeName=kotlin.collections.MutableList::class.asClassName().parameterizedBy(*parameterizedTypeName.typeArguments.map { it.javaToKotlinType() }.toTypedArray())
+
+                PropertySpec.builder(it.simpleName.toString(), newParameterizedTypeName)
+                    .initializer("mutableListOf()")
                     .addModifiers(modifier)
                     .build()
             }
@@ -85,6 +104,10 @@ class BuilderGenerator(
     private fun isAutoDslObject(field: VariableElement): Boolean {
         val value=this.clazzList.find { field.javaToKotlinType() == it.javaToKotlinType() }
         return value!=null
+    }
+
+    private fun isAutoDslObjectCollection(field: VariableElement): Boolean {
+        return (field.asType().asTypeName() is ParameterizedTypeName)
     }
 
     override fun build(): FileSpec {

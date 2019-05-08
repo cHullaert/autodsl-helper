@@ -6,9 +6,9 @@ import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
 import javax.lang.model.element.VariableElement
 
-class SubFunctionGenerator(clazz: TypeElement,
-                           fields: Iterable<VariableElement>,
-                           clazzList: Iterable<Element>): AbstractGenerator(clazz, fields, clazzList) {
+class AutoDslFunctionGenerator(clazz: TypeElement,
+                               fields: Iterable<VariableElement>,
+                               clazzList: Iterable<Element>): AbstractGenerator(clazz, fields, clazzList) {
 
     override fun build(): FileSpec {
         return FileSpec.builder(getPackageName(), FUNCTION_CLASS_PATTERN.format(clazz.simpleName.toString()))

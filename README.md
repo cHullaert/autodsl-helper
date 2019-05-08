@@ -43,7 +43,8 @@ fun person(block: PersonAutoBuilder.() -> Unit): Person = PersonAutoBuilder().ap
 
 
 // amazing, it works also with inheritance
-@AutoDsl
+@AutoDsl(functionName = "overrideSuperPerson")
+// with the parameter functionName we can choose the name of the function (normally it's based on the classname
 open class SuperPerson (name: String, 
                         age: Int, 
                         uuid: UUID, 
@@ -62,7 +63,8 @@ class SuperPersonAutoBuilder {
             SuperPerson(attribute=attribute,name=name,age=age,uuid=UUID.fromString(uuid),friends=friends)
 }
 
-fun superperson(block: SuperPersonAutoBuilder.() -> Unit): SuperPerson =
+// see here the custom function name
+fun overrideSuperPerson(block: SuperPersonAutoBuilder.() -> Unit): SuperPerson =
         SuperPersonAutoBuilder().apply(block).build()
 
 ```

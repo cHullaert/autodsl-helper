@@ -43,7 +43,7 @@ class BuilderGenerator(
         return this.fields.filter { isAutoDslObjectCollection(it) }
             .map {
                 val generator=AutoDslCollectionFunctionGenerator()
-                generator.buildFunction(it.simpleName.toString())
+                generator.buildFunction(it)
             }
     }
 
@@ -81,10 +81,12 @@ class BuilderGenerator(
                     .build()
             } else if (isAutoDslObjectCollection(it)) {
                 val parameterizedTypeName=typeName as ParameterizedTypeName
+                val type=parameterizedTypeName.typeArguments[0].javaToKotlinType() as ClassName
+
                 val newParameterizedTypeName=kotlin.collections.MutableList::class.asClassName().parameterizedBy(*parameterizedTypeName.typeArguments.map { it.javaToKotlinType() }.toTypedArray())
 
-                PropertySpec.builder(it.simpleName.toString(), newParameterizedTypeName)
-                    .initializer("mutableListOf()")
+                PropertySpec.builder(it.simpleName.toString(), newParameterizedTypeName.javaToKotlinType())
+                    .initializer("mutableListOf<%s>()".format(type.simpleName))
                     .addModifiers(modifier)
                     .build()
             }
@@ -107,7 +109,12 @@ class BuilderGenerator(
     }
 
     private fun isAutoDslObjectCollection(field: VariableElement): Boolean {
-        return (field.asType().asTypeName() is ParameterizedTypeName)
+        var type=field.asType().asTypeName()
+        if (type is ParameterizedTypeName) {
+            return type.typeArguments[0].javaToKotlinType() as ClassName!=ClassName("kotlin", "String")
+        }
+
+        return false
     }
 
     override fun build(): FileSpec {

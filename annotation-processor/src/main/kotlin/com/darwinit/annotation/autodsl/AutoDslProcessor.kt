@@ -1,6 +1,7 @@
 package com.darwinit.annotation.autodsl
 
 import com.darwinit.annotation.autodsl.generator.BuilderGenerator
+import com.darwinit.annotation.autodsl.generator.CollectionGenerator
 import com.google.auto.service.AutoService
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.Processor
@@ -48,6 +49,24 @@ class AutoDslProcessor: AbstractProcessor() {
 
         val clazzList=roundEnv!!.getElementsAnnotatedWith(AutoDsl::class.java)
 
+        processClasses(clazzList)
+        processCollections(clazzList)
+
+        return false
+    }
+
+    private fun processCollections(clazzList: Set<Element>) {
+        val allFields = clazzList
+            .map { it as TypeElement }
+            .filter { it.kind === ElementKind.CLASS}
+            .flatMap { getFields(it) }
+
+        CollectionGenerator(allFields)
+            .build()
+            .writeTo(processingEnv.filer)
+    }
+
+    private fun processClasses(clazzList: Set<Element>) {
         clazzList
             .asSequence()
             .map { it as TypeElement }
@@ -60,8 +79,6 @@ class AutoDslProcessor: AbstractProcessor() {
                     .build()
                     .writeTo(processingEnv.filer)
             }
-
-        return true
     }
 
     companion object {

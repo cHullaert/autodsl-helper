@@ -12,7 +12,8 @@ repositories {
 
 dependencies {
     kapt project(":annotation-processor")
-    implementation project(":annotation-processor")
+    compileOnly project(":annotation-processor")
+    implementation project(":annotation-autodsl")
     implementation project(":script-processor")
     implementation group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: '1.3.31'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"

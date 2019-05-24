@@ -1,3 +1,7 @@
+https://github.com/bintray/gradle-bintray-plugin/issues/134
+https://reflectoring.io/guide-publishing-to-bintray-with-gradle/
+https://bintray.com/profile/edit
+
 # Introduction
 
 The goal of this project is to offer a convenient way to produce dsl via kotlin classes.  The project is not a fork but

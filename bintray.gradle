@@ -1,0 +1,25 @@
+bintray {
+    user = "${bintrayUser}"
+    key = "${bintrayKey}"
+
+    publications = ['maven']
+    pkg {
+        repo = 'maven'
+        userOrg = 'chullaert'
+        name = project_name
+        desc = project_description
+        licenses = [project_license_tag]
+        publicDownloadNumbers = true
+        websiteUrl = "https://github.com/$your_github_name/$project_name"
+        issueTrackerUrl = "https://github.com/$your_github_name/$project_name/issues"
+        vcsUrl = "https://github.com/$your_github_name/${project_name}.git"
+        githubRepo = "$your_github_name/$project_name"
+        version {
+            name = project_version
+            vcsTag = project_version
+            gpg {
+                sign = true
+            }
+        }
+    }
+}

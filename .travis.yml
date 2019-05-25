@@ -20,5 +20,10 @@ cache:
 jdk:
   - openjdk8
 
-script:
-  - gradle build
+jobs:
+  include:
+    - stage: build
+      script: gradle build
+    - stage: deploy
+      script: gradle bintrayUpload -Dbintray.user=$BINTRAY_USER -Dbintray.key=$BINTRAY_KEY
+      if: branch = master

@@ -1,6 +1,6 @@
 bintray {
-    user = "${bintrayUser}"
-    key = "${bintrayKey}"
+    user = System.getProperty('bintray.user')
+    key = System.getProperty('bintray.key')
 
     publications = ['maven']
     pkg {

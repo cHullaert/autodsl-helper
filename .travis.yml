@@ -1,6 +1,13 @@
 language: java
 install: true
 
+before_install:
+  - wget http://services.gradle.org/distributions/gradle-4.10.3-bin.zip
+  - unzip -qq gradle-4.10.3-bin.zip
+  - export GRADLE_HOME=$PWD/gradle-4.10.3
+  - export PATH=$GRADLE_HOME/bin:$PATH
+  - gradle -v
+
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
